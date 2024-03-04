@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Form Generator</title>
+  <style>
+    /* Styles for form elements */
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+    }
+    input[type="text"], textarea, select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    .remove-field {
+      cursor: pointer;
+      color: red;
+    }
+    /* Styles for preview */
+    #form-preview {
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Dynamic Form Generator</h1>
+  <div class="form-group">
+    <label for="form-title">Form Title:</label>
+    <input type="text" id="form-title">
+  </div>
+  <div id="fields-container">
+    <!-- Fields will be dynamically added here -->
+  </div>
+  <button onclick="addField('text')">Add Text Field</button>
+  <button onclick="addField('textarea')">Add Textarea Field</button>
+  <button onclick="addField('checkbox')">Add Checkbox Field</button>
+  <button onclick="addField('radio')">Add Radio Field</button>
+  <button onclick="addField('select')">Add Dropdown Field</button>
+  <button onclick="generateForm()">Generate Form</button>
+  
+  <h2>Form Preview</h2>
+  <div id="form-preview"></div>
+
+  <script>
+    function addField(type) {
+      var fieldsContainer = document.getElementById('fields-container');
+
+      var fieldGroup = document.createElement('div');
+      fieldGroup.classList.add('form-group');
+
+      var label = document.createElement('label');
+      label.textContent = 'Field Label:';
+      fieldGroup.appendChild(label);
+
+      var input = document.createElement('input');
+      input.type = 'text';
+      input.classList.add('field-label');
+      fieldGroup.appendChild(input);
+
+      if (type === 'checkbox' || type === 'radio' || type === 'select') {
+        var optionsLabel = document.createElement('label');
+        optionsLabel.textContent = 'Options:';
+        fieldGroup.appendChild(optionsLabel);
+
+        var optionsInput = document.createElement('input');
+        optionsInput.type = 'text';
+        optionsInput.placeholder = 'Enter options separated by commas';
+        optionsInput.classList.add('field-options');
+        fieldGroup.appendChild(optionsInput);
+      }
+
+      var removeButton = document.createElement('span');
+      removeButton.classList.add('remove-field');
+      removeButton.textContent = 'Remove';
+      removeButton.onclick = function() {
+        fieldsContainer.removeChild(fieldGroup);
+      };
+      fieldGroup.appendChild(removeButton);
+
+      fieldsContainer.appendChild(fieldGroup);
+    }
+
+    function generateForm() {
+      var formTitle = document.getElementById('form-title').value;
+      var fieldLabels = document.querySelectorAll('.field-label');
+      var fieldTypes = document.querySelectorAll('.field-type');
+      var fieldOptions = document.querySelectorAll('.field-options');
+      var formPreview = document.getElementById('form-preview');
+      
+      // Clear previous preview content
+      formPreview.innerHTML = '';
+
+      var form = document.createElement('form');
+      form.setAttribute('method', 'post');
+      form.setAttribute('action', '#'); // Set form action as needed
+
+      var formTitleHeading = document.createElement('h3');
+      formTitleHeading.textContent = formTitle;
+      formPreview.appendChild(formTitleHeading);
+
+      fieldLabels.forEach(function(label, index) {
+        var fieldLabel = label.value;
+        var fieldType = fieldTypes[index].value;
+
+        var fieldGroup = document.createElement('div');
+        fieldGroup.classList.add('form-group');
+
+        var labelElement = document.createElement('label');
+        labelElement.textContent = fieldLabel + ':';
+        fieldGroup.appendChild(labelElement);
+
+        var inputElement;
+        if (fieldType === 'textarea') {
+          inputElement = document.createElement('textarea');
+        } else if (fieldType === 'checkbox' || fieldType === 'radio') {
+          var options = fieldOptions[index].value.split(',');
+          options.forEach(function(option) {
+            var optionLabel = document.createElement('label');
+            var checkbox = document.createElement('input');
+            checkbox.type = fieldType;
+            checkbox.name = fieldLabel.toLowerCase().replace(/\s+/g, '-') + '[]';
+            checkbox.value = option.trim();
+            optionLabel.appendChild(checkbox);
+            optionLabel.appendChild(document.createTextNode(option.trim()));
+            fieldGroup.appendChild(optionLabel);
+          });
+        } else if (fieldType === 'select') {
+          inputElement = document.createElement('select');
+          var options = fieldOptions[index].value.split(',');
+          options.forEach(function(option) {
+            var optionElement = document.createElement('option');
+            optionElement.text = option.trim();
+            inputElement.add(optionElement);
+          });
+        } else {
+          inputElement = document.createElement('input');
+          inputElement.type = 'text'; // You can customize field types as needed
+        }
+
+        if (fieldType !== 'checkbox' && fieldType !== 'radio') {
+          inputElement.name = fieldLabel.toLowerCase().replace(/\s+/g, '-'); // Convert label to lowercase and replace spaces with hyphens for name attribute
+          fieldGroup.appendChild(inputElement);
+        }
+
+        form.appendChild(fieldGroup);
+      });
+
+      var submitButton = document.createElement('button');
+      submitButton.setAttribute('type', 'submit');
+      submitButton.textContent = 'Submit';
+      form.appendChild(submitButton);
+
+      formPreview.appendChild(form);
+    }
+  </script>
+</body>
+</html>
