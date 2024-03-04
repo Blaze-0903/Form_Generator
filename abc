@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form Generator</title>
+  <style>
+    /* Styles for form elements */
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+    }
+    input[type="text"], textarea, select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    /* Styles for preview */
+    #form-preview {
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Form Generator</h1>
+  <div class="form-group">
+    <label for="form-title">Form Title:</label>
+    <input type="text" id="form-title">
+  </div>
+  <div id="fields-container">
+    <!-- Fields will be dynamically added here -->
+  </div>
+  <button onclick="addField()">Add Field</button>
+  <button onclick="generateForm()">Generate Form</button>
+  
+  <h2>Form Preview</h2>
+  <div id="form-preview"></div>
+
+  <script>
+    function addField() {
+      var fieldsContainer = document.getElementById('fields-container');
+
+      var fieldGroup = document.createElement('div');
+      fieldGroup.classList.add('form-group');
+
+      var label = document.createElement('label');
+      label.textContent = 'Field Label:';
+      fieldGroup.appendChild(label);
+
+      var input = document.createElement('input');
+      input.type = 'text';
+      input.classList.add('field-label');
+      fieldGroup.appendChild(input);
+
+      fieldsContainer.appendChild(fieldGroup);
+    }
+
+    function generateForm() {
+      var formTitle = document.getElementById('form-title').value;
+      var fieldLabels = document.querySelectorAll('.field-label');
+      var formPreview = document.getElementById('form-preview');
+      
+      // Clear previous preview content
+      formPreview.innerHTML = '';
+
+      var form = document.createElement('form');
+      form.setAttribute('method', 'post');
+      form.setAttribute('action', '#'); // Set form action as needed
+
+      var formTitleHeading = document.createElement('h3');
+      formTitleHeading.textContent = formTitle;
+      formPreview.appendChild(formTitleHeading);
+
+      fieldLabels.forEach(function(label) {
+        var fieldLabel = label.value;
+        
+        var fieldGroup = document.createElement('div');
+        fieldGroup.classList.add('form-group');
+
+        var labelElement = document.createElement('label');
+        labelElement.textContent = fieldLabel + ':';
+        fieldGroup.appendChild(labelElement);
+
+        var inputElement = document.createElement('input');
+        inputElement.type = 'text'; // You can customize field types as needed
+        inputElement.name = fieldLabel.toLowerCase().replace(/\s+/g, '-'); // Convert label to lowercase and replace spaces with hyphens for name attribute
+        fieldGroup.appendChild(inputElement);
+
+        form.appendChild(fieldGroup);
+      });
+
+      var submitButton = document.createElement('button');
+      submitButton.setAttribute('type', 'submit');
+      submitButton.textContent = 'Submit';
+      form.appendChild(submitButton);
+
+      formPreview.appendChild(form);
+    }
+  </script>
+</body>
+</html>
