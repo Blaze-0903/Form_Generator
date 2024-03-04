@@ -5,48 +5,105 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dynamic Form Creator</title>
   <style>
-    /* Styles for form elements */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f2f2f2;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1, h2 {
+      text-align: center;
+    }
+
     .form-group {
       margin-bottom: 20px;
     }
+
     label {
       display: block;
       font-weight: bold;
     }
+
     input[type="text"], textarea, select {
-      width: 100%;
+      width: calc(100% - 16px);
       padding: 8px;
       border: 1px solid #ccc;
       border-radius: 4px;
       box-sizing: border-box;
     }
-    /* Styles for preview */
+
+    button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
     #form-preview {
       border: 1px solid #ccc;
       padding: 10px;
       border-radius: 4px;
+      background-color: #f9f9f9;
+    }
+
+    .form-group-preview {
+      margin-bottom: 10px;
+    }
+
+    .form-group-preview label {
+      font-weight: bold;
+    }
+
+    .form-group-preview input[type="text"], .form-group-preview textarea, .form-group-preview select {
+      width: calc(100% - 16px);
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      background-color: #fff;
     }
   </style>
 </head>
 <body>
-  <h1>Dynamic Form Creator</h1>
-  <div class="form-group">
-    <label for="field-label">Field Label:</label>
-    <input type="text" id="field-label">
+  <div class="container">
+    <h1>Dynamic Form Creator</h1>
+    <div class="form-group">
+      <label for="field-label">Field Label:</label>
+      <input type="text" id="field-label">
+    </div>
+    <div class="form-group">
+      <label for="field-type">Field Type:</label>
+      <select id="field-type">
+        <option value="text">Text</option>
+        <option value="textarea">Numbers</option>
+        <option value="radio">Radio Button</option>
+        <option value="select">Select (Multiple Choice)</option>
+      </select>
+    </div>
+    <button onclick="addField()">Add Field</button>
+    
+    <h2>Form Preview</h2>
+    <div id="form-preview"></div>
   </div>
-  <div class="form-group">
-    <label for="field-type">Field Type:</label>
-    <select id="field-type">
-      <option value="text">Text</option>
-      <option value="textarea">Numbers</option>
-      <option value="radio">Radio Button</option>
-      <option value="select">Select (Multiple Choice)</option>
-    </select>
-  </div>
-  <button onclick="addField()">Add Field</button>
-  
-  <h2>Form Preview</h2>
-  <div id="form-preview"></div>
 
   <script>
     function addField() {
@@ -61,13 +118,13 @@
 
       var field;
       if (type === 'textarea') {
-        field = `<div class="form-group"><label>${label}:</label><textarea></textarea></div>`;
+        field = `<div class="form-group-preview"><label>${label}:</label><textarea></textarea></div>`;
       } else if (type === 'checkbox' || type === 'radio') {
-        field = `<div class="form-group"><label>${label}:</label><input type="${type}"></div>`;
+        field = `<div class="form-group-preview"><label>${label}:</label><input type="${type}"></div>`;
       } else if (type === 'select') {
-        field = `<div class="form-group"><label>${label}:</label><select multiple><option>Option 1</option><option>Option 2</option><option>Option 3</option></select></div>`;
+        field = `<div class="form-group-preview"><label>${label}:</label><select multiple><option>Option 1</option><option>Option 2</option><option>Option 3</option></select></div>`;
       } else {
-        field = `<div class="form-group"><label>${label}:</label><input type="text"></div>`;
+        field = `<div class="form-group-preview"><label>${label}:</label><input type="text"></div>`;
       }
 
       preview.innerHTML += field;
